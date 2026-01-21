@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Note For You 💌</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff9a9e;
+            --secondary: #fad0c4;
+            --accent: #fff1eb;
+            --text: #5d4037;
+            --envelope-color: #ff758c;
+            --paper-color: #fffdf7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text);
+            perspective: 1000px;
+        }
+
+        /* --- Floating Stickers --- */
+        .sticker {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.5;
+            animation: float 7s ease-in-out infinite;
+            z-index: -1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(15deg); }
+        }
+
+        /* --- Envelope Styles --- */
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            animation: heartbeat 1.5s infinite ease-in-out;
+            z-index: 10;
+        }
+
+        .envelope-wrapper:hover, .envelope-wrapper.open { animation: none; }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background: var(--envelope-color);
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transition: opacity 0.5s;
+        }
+
+        .lid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: inherit;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+            filter: brightness(1.1);
+        }
+
+        .pocket {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 100%;
+            background: inherit;
+            clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+            z-index: 15;
+            filter: brightness(0.9);
+        }
+
+        .letter-preview {
+            position: absolute;
+            bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 80%; height: 80%;
+            background: var(--accent);
+            border-radius: 5px 5px 0 0;
+            z-index: 5;
+            transition: bottom 0.8s, opacity 0.4s 0.4s;
+            display: flex; justify-content: center; align-items: flex-start;
+            padding-top: 20px;
+            font-family: 'Pacifico', cursive;
+            color: var(--envelope-color);
+        }
+
+        .click-instruction {
+            text-align: center;
+            margin-top: 30px;
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 1.5rem;
+            transition: opacity 0.5s;
+        }
+
+        /* Open States */
+        .envelope-wrapper.open .lid { transform: rotateX(180deg); }
+        .envelope-wrapper.open .letter-preview { bottom: 150%; opacity: 0; }
+        
+        .envelope-wrapper.open .envelope { 
+            transition: opacity 0.5s 0.8s; 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        .envelope-wrapper.open .click-instruction { opacity: 0; }
+
+
+        /* --- 🎨 NOTE POPUP STYLES --- */
+        .note-popup {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90%;
+            max-width: 420px;
+            background: var(--paper-color);
+            background-image: linear-gradient(#f0f0f0 1px, transparent 1px), linear-gradient(90deg, #f0f0f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            border-radius: 10px;
+            padding: 2rem 2rem; /* Reduced padding slightly to fit button */
+            text-align: center;
+            box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.5), 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid #ddd;
+            pointer-events: none;
+        }
+
+        .note-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .note-popup::before, .note-popup::after {
+            content: '✨';
+            position: absolute;
+            font-size: 1.5rem;
+        }
+        .note-popup::before { top: 10px; left: 10px; }
+        .note-popup::after { bottom: 10px; right: 10px; transform: rotate(180deg); }
+
+        .note-image-frame {
+            position: relative;
+            width: 180px;
+            background: white;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: rotate(-3deg);
+            margin: 0 auto 20px;
+            border: 1px solid #eee;
+        }
+
+        .note-image-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid #f0f0f0;
+        }
+
+        .tape {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.6);
+            background-image: linear-gradient(45deg, #ff9a9e 25%, transparent 25%, transparent 50%, #ff9a9e 50%, #ff9a9e 75%, transparent 75%, transparent);
+            background-size: 20px 20px;
+            opacity: 0.8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .note-popup h2 {
+            font-family: 'Pacifico', cursive;
+            color: #d63384;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 0px #ffd1dc;
+        }
+
+        .note-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .note-content { opacity: 0; transform: translateY(10px); transition: all 0.5s 0.5s ease; }
+        .note-popup.show .note-content { opacity: 1; transform: translateY(0); }
+
+        /* --- NEW SURPRISE BUTTON --- */
+        .surprise-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-family: 'Quicksand', sans-serif;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: pulseBtn 2s infinite;
+            border: 2px solid white;
+        }
+
+        .surprise-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6);
+        }
+
+        @keyframes pulseBtn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sticker" style="top: 5%; left: 5%;">💖</div>
+    <div class="sticker" style="top: 15%; right: 20%;">✨</div>
+    <div class="sticker" style="bottom: 10%; left: 15%; font-size: 3rem;">💌</div>
+    <div class="sticker" style="bottom: 25%; right: 10%;">🌸</div>
+
+    <audio id="bg-music" loop autoplay>
+        <source src="Sufna Banke - Harvi (DJJOhAL.Com).mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="envelope-container-main">
+        <div class="envelope-wrapper" onclick="openEnvelope(event)">
+            <div class="envelope">
+                <div class="lid"></div>
+                <div class="letter-preview">A note for you...</div>
+                <div class="pocket"></div>
+            </div>
+        </div>
+        <p class="click-instruction">Tap the envelope! 👆</p>
+    </div>
+
+    <div class="note-popup" id="final-note">
+        
+        <div class="note-image-frame">
+            <div class="tape"></div>
+            <img src="Yuvi.jpeg" alt="Our Memories">
+        </div>
+
+        <h2>My Dearest Bestie,</h2>
+        
+        <div class="note-content">
+            <p>I am so lucky to have you in my life. Thank you for being the amazing person you are. Every moment with you is a treasure.</p>
+            <p>May this year bring you as much joy as you bring to everyone around you. Happy Birthday! 🎂✨</p>
+            
+            <p style="font-family: 'Pacifico', cursive; margin-top: 15px; color: #ff758c; font-size: 1.3rem;">Love always,</p>
+            <p style="font-weight: bold;">Manisha</p>
+
+            <a href="haha.html" class="surprise-btn">🎁 Click for a Surprise!</a>
+        </div>
+    </div>
+
+    <script>
+        // 1. Open Envelope Function
+        function openEnvelope(event) {
+            event.stopPropagation();
+
+            const envelopeWrapper = document.querySelector('.envelope-wrapper');
+            const finalNote = document.getElementById('final-note');
+            const audio = document.getElementById('bg-music');
+
+            envelopeWrapper.classList.add('open');
+
+            if (audio.paused) {
+                audio.play().catch(error => {
+                    console.log("Autoplay prevented by browser, waiting for interaction.");
+                });
+            }
+
+            setTimeout(() => {
+                finalNote.classList.add('show');
+            }, 1000);
+        }
+
+        // 2. Click Anywhere to Close Function
+        document.addEventListener('click', function(event) {
+            const finalNote = document.getElementById('final-note');
+            const envelopeWrapper = document.querySelector('.envelope-wrapper');
+
+            if (finalNote.classList.contains('show')) {
+                if (!finalNote.contains(event.target)) {
+                    finalNote.classList.remove('show');
+                    setTimeout(() => {
+                        envelopeWrapper.classList.remove('open');
+                    }, 500);
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

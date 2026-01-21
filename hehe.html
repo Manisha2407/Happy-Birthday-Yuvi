@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Bestie! 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Pacifico&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* UPDATED: Softer Baby Pink Palette */
+            --primary: #ffd1dc; /* Classic Baby Pink */
+            --secondary: #ffe4e1; /* Misty Rose (very light pink) */
+            --accent: #fff0f5; /* Lavender Blush */
+            --text: #5d4037; /* Warm brown text */
+            --glass: rgba(255, 255, 255, 0.65); /* Slightly more opaque glass for better contrast */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text);
+            position: relative;
+        }
+
+        /* --- NEW: Varied Background Animations --- */
+        /* Standard slow float */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(-5deg); }
+        }
+
+        /* Faster, bouncier float */
+        @keyframes floatFast {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-15px) rotate(10deg) scale(1.1); }
+        }
+
+        /* Side to side wobble */
+        @keyframes wobble {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            25% { transform: translateX(-15px) rotate(-8deg); }
+            75% { transform: translateX(15px) rotate(8deg); }
+        }
+
+        .sticker {
+            position: absolute;
+            font-size: 2.5rem; /* Slightly larger base size */
+            opacity: 0.7; /* Slightly more visible */
+            z-index: 0;
+            user-select: none;
+            filter: drop-shadow(2px 2px 4px rgba(255, 182, 193, 0.5)); /* Soft pink shadow */
+        }
+
+        /* Helper classes to vary animations */
+        .anim-slow { animation: floatSlow 8s ease-in-out infinite; }
+        .anim-fast { animation: floatFast 4s ease-in-out infinite; }
+        .anim-wobble { animation: wobble 6s ease-in-out infinite; }
+
+
+        /* --- Main Card Container --- */
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(15px); /* Increased blur */
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 40px 0 rgba(255, 182, 193, 0.3); /* Pinker shadow */
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            max-width: 90%;
+            width: 500px;
+            z-index: 10;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+        
+        /* Added subtle hover effect to main container */
+        .container:hover {
+             transform: translateY(-5px);
+             box-shadow: 0 15px 50px 0 rgba(255, 182, 193, 0.5);
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3rem;
+            color: #e91e63; /* A deeper pink for headers */
+            margin-bottom: 0.5rem;
+            text-shadow: 3px 3px 0px rgba(255,255,255,0.8);
+        }
+
+        p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        /* --- Gift Box --- */
+        .gift-box-container {
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+        }
+
+        .gift-box-container:hover {
+            transform: scale(1.15) rotate(8deg);
+        }
+
+        .gift-emoji {
+            font-size: 7rem;
+            filter: drop-shadow(0 10px 15px rgba(233, 30, 99, 0.3));
+        }
+
+        .tap-text {
+            font-family: 'Fredoka One', cursive;
+            color: #fff;
+            background: #ff8ba7; /* Pinker button bg */
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+            animation: bounce 1.5s infinite;
+            box-shadow: 0 4px 10px rgba(255, 139, 167, 0.4);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* --- Hidden Content --- */
+        .hidden-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .photo-frame {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            border: 6px solid white;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.6);
+            background: #fff;
+            transform: rotate(-3deg); /* Cute tilt */
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            background: linear-gradient(45deg, #ffbed1, #ff8ba7);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 139, 167, 0.5);
+            transition: all 0.2s;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 139, 167, 0.7);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-link {
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .pop-effect {
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            animation: popPulse 2s infinite;
+        }
+
+        @keyframes popPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 126, 179, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 126, 179, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 126, 179, 0); }
+        }
+
+        /* --- Canvas --- */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="sticker anim-slow" style="top: 5%; left: 5%; font-size: 3rem;">🎂</div>
+    <div class="sticker anim-wobble" style="top: 15%; right: 8%;">🎈</div>
+    <div class="sticker anim-fast" style="bottom: 20%; left: 15%; font-size: 4rem;">🎁</div>
+    <div class="sticker anim-slow" style="bottom: 5%; right: 5%;">✨</div>
+    <div class="sticker anim-wobble" style="top: 40%; left: -2%; font-size: 2.5rem;">🧁</div>
+    <div class="sticker anim-fast" style="top: 10%; left: 40%;">💖</div>
+    <div class="sticker anim-slow" style="bottom: 35%; right: 25%; font-size: 3rem;">🎀</div>
+    <div class="sticker anim-wobble" style="top: 60%; right: 2%; font-size: 2.2rem;">🍭</div>
+    <div class="sticker anim-fast" style="top: 2%; right: 30%;">🌟</div>
+    <div class="sticker anim-slow" style="bottom: 2%; left: 40%; font-size: 2.8rem;">🧸</div>
+    <div class="sticker anim-wobble" style="top: 25%; left: 20%; color: #ff69b4;">🍥</div>
+    <div class="sticker anim-fast" style="bottom: 50%; right: 10%; font-size: 3.5rem;">🎉</div>
+    <div class="sticker anim-slow" style="top: 55%; left: 10%;">🍦</div>
+
+
+    <audio id="bday-audio" loop autoplay>
+        <source src="Dooron Dooron-(SambalpuriStar.In).mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div id="gift-section">
+            <h1>Hey Bestie!</h1>
+            <p>I have a surprise for you...</p>
+            
+            <div class="gift-box-container" onclick="openGift()">
+                <div class="gift-emoji">🎁</div>
+                <div class="tap-text">Tap to Open</div>
+            </div>
+        </div>
+
+        <div id="message-section" class="hidden-content">
+            <div class="photo-frame">
+                <img src="cu.jpeg" alt="Best Friend" id="friend-photo">
+            </div>
+            <h1>Happy Birthday! 🎉</h1>
+            <p>You are the sprinkle on my cupcake! 🧁<br>Hope your day is as amazing as you are!</p>
+
+            <div class="button-group">
+                <button class="btn" onclick="toggleMusic()">⏸ Pause Music</button>
+                <a href="note.html" class="btn btn-link pop-effect">👉 Click Here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- JS remains mostly the same --- */
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let confetti = [];
+        const confettiCount = 300;
+        const gravity = 0.5;
+        const terminalVelocity = 5;
+        const drag = 0.075;
+        // Updated confetti colors to match the pink theme better
+        const colors = [
+            { front: '#ff7eb3', back: '#ff758c' }, // Pink
+            { front: '#ffbed1', back: '#ff8ba7' }, // Lighter Pink
+            { front: '#ffd1dc', back: '#ffc0cb' }, // Baby Pink
+            { front: '#e1bee7', back: '#ce93d8' }, // Purple
+            { front: '#fff0f5', back: '#f8bbd0' }, // White/Pale
+            { front: '#FFD700', back: '#FFA500' }  // Gold accent
+        ];
+
+        resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        randomRange = (min, max) => Math.random() * (max - min) + min;
+
+        initConfetti = () => {
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push({
+                    color: colors[Math.floor(randomRange(0, colors.length))],
+                    dimensions: { x: randomRange(10, 20), y: randomRange(10, 30) },
+                    position: { x: randomRange(0, canvas.width), y: canvas.height - 1 },
+                    rotation: randomRange(0, 2 * Math.PI),
+                    scale: { x: 1, y: 1 },
+                    velocity: { x: randomRange(-25, 25), y: randomRange(0, -50) }
+                });
+            }
+        }
+
+        render = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            confetti.forEach((confetto, index) => {
+                let width = (confetto.dimensions.x * confetto.scale.x);
+                let height = (confetto.dimensions.y * confetto.scale.y);
+
+                ctx.translate(confetto.position.x, confetto.position.y);
+                ctx.rotate(confetto.rotation);
+
+                confetto.velocity.x -= confetto.velocity.x * drag;
+                confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
+                confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
+
+                confetto.position.x += confetto.velocity.x;
+                confetto.position.y += confetto.velocity.y;
+
+                if (confetto.position.y >= canvas.height) confetti.splice(index, 1);
+                if (confetto.position.x > canvas.width) confetto.position.x = 0;
+                if (confetto.position.x < 0) confetto.position.x = canvas.width;
+
+                confetto.scale.y = Math.cos(confetto.position.y * 0.1);
+                ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+                ctx.fillRect(-width / 2, -height / 2, width, height);
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+            });
+
+            if (confetti.length > 0) window.requestAnimationFrame(render);
+        }
+
+        function openGift() {
+            const giftSection = document.getElementById('gift-section');
+            const messageSection = document.getElementById('message-section');
+            const audio = document.getElementById('bday-audio');
+
+            // 1. Reveal Content
+            giftSection.style.display = 'none';
+            messageSection.style.display = 'block';
+            
+            setTimeout(() => {
+                messageSection.style.opacity = '1';
+            }, 50);
+
+            // 2. Start Confetti
+            initConfetti();
+            render();
+
+            // 3. Play Audio (This works because it is inside a click event)
+            audio.play().catch(error => {
+                console.log("Autoplay prevented by browser, waiting for interaction.");
+            });
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('bday-audio');
+            const btn = document.querySelector('.button-group .btn');
+            
+            if (audio.paused) {
+                audio.play();
+                btn.innerText = "⏸ Pause Music";
+            } else {
+                audio.pause();
+                btn.innerText = "🎵 Play Music";
+            }
+        }
+
+        // 4. Fallback: Try to play immediately on load (Might be blocked by browser)
+        window.onload = function() {
+            const audio = document.getElementById('bday-audio');
+            audio.play().catch(error => {
+                console.log("Browser blocked autoplay. Music will start on click.");
+            });
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+    </script>
+</body>
+</html>

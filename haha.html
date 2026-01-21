@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Yuvi!</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700&display=swap');
+
+:root {
+    --pink1:#ffe0f0;
+    --pink2:#ffb3d9;
+    --dark:#d63384;
+}
+
+body{
+    margin:0;
+    height:100vh;
+    background:linear-gradient(135deg,var(--pink1),var(--pink2));
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:'Poppins',sans-serif;
+    overflow:hidden;
+}
+
+/* MAIN CARD */
+.container{
+    background:rgba(255,255,255,0.35);
+    backdrop-filter:blur(10px);
+    padding:40px;
+    border-radius:30px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(214,51,132,.25);
+    z-index:5;
+}
+
+h1{
+    font-family:'Pacifico',cursive;
+    color:var(--dark);
+    font-size:3rem;
+}
+
+/* CAKE */
+.cake-box{
+    position:relative;
+    width:250px;
+    height:200px;
+    margin:30px auto;
+}
+
+.layer{position:absolute;width:100%;border-radius:10px;}
+.l-bottom{height:80px;bottom:0;background:linear-gradient(to right,#ff99cc,#ffcc99,#99ccff);}
+.l-middle{height:60px;bottom:80px;width:90%;left:5%;background:linear-gradient(to right,#ffb3d9,#fffdd0);}
+.frosting{height:20px;background:#fff;border-radius:10px 10px 0 0;}
+
+.candle{
+    width:15px;height:45px;
+    background:repeating-linear-gradient(45deg,#ffcc00,#ffee99 5px);
+    position:absolute;bottom:140px;left:50%;
+    transform:translateX(-50%);
+}
+
+.flame{
+    width:15px;height:20px;
+    background:orange;
+    border-radius:50% 50% 20% 20%;
+    position:absolute;top:-20px;
+    animation:flicker .5s infinite alternate;
+}
+
+.flame.out{display:none;}
+
+@keyframes flicker{
+    100%{transform:scale(1.1);opacity:.8;}
+}
+
+/* BUTTONS */
+.btn{
+    padding:12px 30px;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(45deg,#ff6699,#d63384);
+    color:#fff;
+    font-size:1.1rem;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+#memoryBtn{
+    display:none;
+    background:linear-gradient(45deg,#66ccff,#0099cc);
+}
+
+/* CONFETTI */
+canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+}
+
+/* MODAL */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:20;
+}
+
+.modal-content{
+    background:#fff0f7;
+    width:95%;
+    max-width:900px;
+    padding:30px;
+    border-radius:30px;
+    position:relative;
+    animation:pop .5s ease;
+}
+
+@keyframes pop{
+    from{transform:scale(.7);opacity:0;}
+    to{transform:scale(1);opacity:1;}
+}
+
+.close{
+    position:absolute;
+    top:15px;right:20px;
+    font-size:24px;
+    cursor:pointer;
+    color:var(--dark);
+}
+
+/* LARGE IMAGE GRID */
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:25px;
+    margin-top:20px;
+}
+
+.gallery img{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+    border-radius:20px;
+    cursor:pointer;
+    transition:.4s ease;
+    box-shadow:0 15px 35px rgba(214,51,132,.35);
+    animation:fadeUp .8s ease forwards;
+}
+
+.gallery img:hover{
+    transform:scale(1.08) rotate(1deg);
+    box-shadow:0 25px 50px rgba(214,51,132,.55);
+}
+
+/* TEXT */
+.memory-text{
+    margin-top:25px;
+    color:#b03070;
+    font-size:1.05rem;
+    text-align:center;
+    line-height:1.6;
+    animation:fadeUp 1.2s ease forwards;
+}
+
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+/* FULLSCREEN IMAGE VIEW */
+.viewer{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.8);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:30;
+}
+
+.viewer img{
+    max-width:90%;
+    max-height:90%;
+    border-radius:20px;
+    box-shadow:0 30px 60px rgba(0,0,0,.6);
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="container">
+    <h1>Happy Birthday Yuvi! 💖</h1>
+    <p style="color:#d63384">Make a wish 🎂</p>
+
+    <div class="cake-box">
+        <div class="candle"><div class="flame" id="flame"></div></div>
+        <div class="layer l-middle"><div class="frosting"></div></div>
+        <div class="layer l-bottom"><div class="frosting"></div></div>
+    </div>
+
+    <button class="btn" onclick="blowCandle()">Make a Wish ✨</button><br>
+    <button class="btn" id="memoryBtn" onclick="openModal()">Click for Memories 📸</button>
+</div>
+
+<!-- MEMORY MODAL -->
+<div class="modal" id="memoryModal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">×</span>
+        <h2 style="color:#d63384;text-align:center;font-family:'Pacifico',cursive;">Our Memories 💖</h2>
+
+        <div class="gallery">
+            <img src="Yuvi.jpeg" onclick="view(this)">
+            <img src="yyy.jpeg" onclick="view(this)">
+            <img src="cup.jpeg" onclick="view(this)">
+            <img src="cu.jpeg" onclick="view(this)">
+        </div>
+
+        <p class="memory-text">
+            From random laughs to quiet moments, every memory with you
+            holds a special place in my heart.  
+            Thank you for being a beautiful part of my journey 💕
+        </p>
+    </div>
+</div>
+
+<!-- FULLSCREEN VIEW -->
+<div class="viewer" id="viewer" onclick="closeView()">
+    <img id="viewerImg">
+</div>
+
+<script>
+const flame=document.getElementById("flame");
+const memoryBtn=document.getElementById("memoryBtn");
+const canvas=document.getElementById("confetti");
+const ctx=canvas.getContext("2d");
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+function blowCandle(){
+    flame.classList.add("out");
+    memoryBtn.style.display="inline-block";
+    startConfetti();
+}
+
+let particles=[];
+
+function startConfetti(){
+    for(let i=0;i<150;i++){
+        particles.push({
+            x:Math.random()*canvas.width,
+            y:-10,
+            s:Math.random()*5+2,
+            c:["#ff4d6d","#ffd166","#06d6a0"][Math.floor(Math.random()*3)]
+        });
+    }
+    animate();
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach((p,i)=>{
+        p.y+=p.s;
+        ctx.fillStyle=p.c;
+        ctx.fillRect(p.x,p.y,5,5);
+        if(p.y>canvas.height)particles.splice(i,1);
+    });
+    if(particles.length)requestAnimationFrame(animate);
+}
+
+function openModal(){document.getElementById("memoryModal").style.display="flex";}
+function closeModal(){document.getElementById("memoryModal").style.display="none";}
+
+function view(img){
+    document.getElementById("viewer").style.display="flex";
+    document.getElementById("viewerImg").src=img.src;
+}
+function closeView(){
+    document.getElementById("viewer").style.display="none";
+}
+</script>
+
+</body>
+</html>
